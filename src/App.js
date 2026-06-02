@@ -49,19 +49,20 @@ const CATS = [
 ];
 
 const PROS = [
-  {id:1,name:"Adewale Johnson",role:"Electrician",icon:"⚡",rating:4.9,jobs:312,city:"Ikeja",state:"Lagos",verified:true,color:"#F5A623",price:"₦5k–₦20k",av:"AJ"},
-  {id:2,name:"Ngozi Okafor",role:"Photographer",icon:"📸",rating:5.0,jobs:489,city:"Victoria Island",state:"Lagos",verified:true,color:"#A78BFA",price:"₦30k–₦150k",av:"NO"},
-  {id:3,name:"Emeka Obi",role:"Plumber",icon:"🔧",rating:4.7,jobs:198,city:"Abuja",state:"FCT Abuja",verified:true,color:"#4F7FFF",price:"₦3k–₦15k",av:"EO"},
-  {id:4,name:"Fatima Al-Hassan",role:"Makeup Artist",icon:"💄",rating:4.8,jobs:567,city:"Kano",state:"Kano",verified:true,color:"#F472B6",price:"₦15k–₦80k",av:"FA"},
-  {id:5,name:"Chidi Nwosu",role:"Barber",icon:"✂️",rating:4.6,jobs:1200,city:"Onitsha",state:"Anambra",verified:false,color:"#34D399",price:"₦500–₦2k",av:"CN"},
-  {id:6,name:"Blessing Eze",role:"Hair Stylist",icon:"💈",rating:4.9,jobs:834,city:"Port Harcourt",state:"Rivers",verified:true,color:"#FB923C",price:"₦3k–₦25k",av:"BE"},
-  {id:7,name:"Musa Tanko",role:"Mechanic",icon:"🚗",rating:4.5,jobs:421,city:"Kaduna",state:"Kaduna",verified:true,color:"#22D3EE",price:"₦5k–₦50k",av:"MT"},
-  {id:8,name:"Amina Bello",role:"Tailor",icon:"👗",rating:5.0,jobs:276,city:"Akungba",state:"Ondo",verified:false,color:"#C084FC",price:"₦5k–₦40k",av:"AB"},
+  {id:1,name:"Adewale Johnson",role:"Electrician",icon:"⚡",rating:4.9,jobs:312,city:"Ikeja",state:"Lagos",address:"12 Allen Avenue, Ikeja",verified:true,color:"#F5A623",price:"₦5k–₦20k",av:"AJ"},
+  {id:2,name:"Ngozi Okafor",role:"Photographer",icon:"📸",rating:5.0,jobs:489,city:"Victoria Island",state:"Lagos",address:"5 Adeola Odeku Street, VI",verified:true,color:"#A78BFA",price:"₦30k–₦150k",av:"NO"},
+  {id:3,name:"Emeka Obi",role:"Plumber",icon:"🔧",rating:4.7,jobs:198,city:"Abuja",state:"FCT Abuja",address:"Plot 44 Wuse Zone 5, Abuja",verified:true,color:"#4F7FFF",price:"₦3k–₦15k",av:"EO"},
+  {id:4,name:"Fatima Al-Hassan",role:"Makeup Artist",icon:"💄",rating:4.8,jobs:567,city:"Kano",state:"Kano",address:"14 Bompai Road, Kano",verified:true,color:"#F472B6",price:"₦15k–₦80k",av:"FA"},
+  {id:5,name:"Chidi Nwosu",role:"Barber",icon:"✂️",rating:4.6,jobs:1200,city:"Onitsha",state:"Anambra",address:"22 New Market Road, Onitsha",verified:false,color:"#34D399",price:"₦500–₦2k",av:"CN"},
+  {id:6,name:"Blessing Eze",role:"Hair Stylist",icon:"💈",rating:4.9,jobs:834,city:"Port Harcourt",state:"Rivers",address:"8 Rumuola Road, Port Harcourt",verified:true,color:"#FB923C",price:"₦3k–₦25k",av:"BE"},
+  {id:7,name:"Musa Tanko",role:"Mechanic",icon:"🚗",rating:4.5,jobs:421,city:"Kaduna",state:"Kaduna",address:"3 Kachia Road, Kaduna",verified:true,color:"#22D3EE",price:"₦5k–₦50k",av:"MT"},
+  {id:8,name:"Amina Bello",role:"Tailor",icon:"👗",rating:5.0,jobs:276,city:"Akungba",state:"Ondo",address:"7 Ikare Road, Akungba",verified:false,color:"#C084FC",price:"₦5k–₦40k",av:"AB"},
 ];
 
 const A="#F5A623",BG="#0D0E14",SUR="#13141C",CRD="#1A1B26",BDR="#2A2C3E",TXT="#ECEEF7",MUT="#7B7F9E",FNT="#4A4D66",GRN="#34D399";
 
 function ProCard({p}) {
+  const [showFull, setShowFull] = useState(false);
   return (
     <div style={{background:CRD,border:`1px solid ${BDR}`,borderRadius:14,padding:16,marginBottom:12}}>
       <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
@@ -71,7 +72,8 @@ function ProCard({p}) {
             <span style={{fontWeight:700,fontSize:14,color:TXT}}>{p.name}</span>
             {p.verified && <span style={{background:"rgba(52,211,153,0.1)",color:GRN,border:"1px solid rgba(52,211,153,0.25)",borderRadius:20,fontSize:10,fontWeight:700,padding:"1px 7px"}}>✦ VERIFIED</span>}
           </div>
-          <div style={{color:MUT,fontSize:12,marginBottom:5}}>{p.icon} {p.role} · {p.city}, {p.state}</div>
+          <div style={{color:MUT,fontSize:12,marginBottom:3}}>{p.icon} {p.role} · {p.city}, {p.state}</div>
+          <div style={{color:FNT,fontSize:11,marginBottom:5}}>📍 {p.address}</div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <span style={{color:A,fontSize:12}}>{"★".repeat(Math.round(p.rating))}</span>
             <span style={{color:A,fontWeight:700,fontSize:12}}>{p.rating}</span>
@@ -88,7 +90,111 @@ function ProCard({p}) {
   );
 }
 
-function AuthModal({mode,onClose,onDone}) {
+function ProviderOnboarding({user, onDone}) {
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({
+    category:"", state:"", city:"", address:"", phone:"",
+    price:"", experience:"", bio:""
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const upd = (k,v) => setForm(f=>({...f,[k]:v}));
+  const stateObj = STATES.find(s=>s.name===form.state);
+  const inp = {width:"100%",background:SUR,border:`1px solid ${BDR}`,color:TXT,borderRadius:9,padding:"11px 13px",fontSize:14,outline:"none",fontFamily:"inherit",marginBottom:12,boxSizing:"border-box"};
+
+  if (submitted) return (
+    <div style={{minHeight:"100vh",background:BG,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div style={{background:CRD,border:`1px solid ${BDR}`,borderRadius:18,padding:32,textAlign:"center",maxWidth:380,width:"100%"}}>
+        <div style={{fontSize:52,marginBottom:16}}>🎉</div>
+        <div style={{color:A,fontWeight:800,fontSize:20,marginBottom:8}}>Profile Submitted!</div>
+        <div style={{color:MUT,fontSize:14,lineHeight:1.7,marginBottom:24}}>Your profile is under review. Once verified you will appear in search results for clients in <strong style={{color:TXT}}>{form.city}, {form.state}</strong>.</div>
+        <button onClick={onDone} style={{background:A,color:BG,border:"none",borderRadius:9,padding:"13px 32px",fontWeight:800,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>Go to Home</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{minHeight:"100vh",background:BG,padding:"32px 16px"}}>
+      <div style={{maxWidth:480,margin:"0 auto"}}>
+        <div style={{fontWeight:800,fontSize:17,marginBottom:4}}>Nex<span style={{color:A}}>staff</span></div>
+        <div style={{color:MUT,fontSize:13,marginBottom:24}}>Complete your professional profile</div>
+
+        {/* Progress */}
+        <div style={{display:"flex",gap:6,marginBottom:28}}>
+          {[1,2,3].map(s=>(
+            <div key={s} style={{flex:1,height:4,borderRadius:4,background:s<=step?A:BDR,transition:"background 0.3s"}}/>
+          ))}
+        </div>
+
+        {step===1 && (
+          <div>
+            <div style={{color:TXT,fontWeight:700,fontSize:16,marginBottom:16}}>Step 1 — Your Service</div>
+            <div style={{color:MUT,fontSize:12,marginBottom:8}}>Select your service category</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}>
+              {CATS.map(c=>(
+                <button key={c.label} onClick={()=>upd("category",c.label)} style={{background:form.category===c.label?"rgba(245,166,35,0.12)":CRD,color:form.category===c.label?A:MUT,border:`1px solid ${form.category===c.label?A:BDR}`,borderRadius:10,padding:"10px 8px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",textAlign:"left"}}>
+                  {c.icon} {c.label}
+                </button>
+              ))}
+            </div>
+            <button onClick={()=>form.category&&setStep(2)} style={{width:"100%",background:form.category?A:FNT,color:form.category?BG:MUT,border:"none",borderRadius:9,padding:"13px",fontWeight:800,fontSize:15,cursor:form.category?"pointer":"default",fontFamily:"inherit"}}>Next →</button>
+          </div>
+        )}
+
+        {step===2 && (
+          <div>
+            <div style={{color:TXT,fontWeight:700,fontSize:16,marginBottom:16}}>Step 2 — Your Location</div>
+            <div style={{color:MUT,fontSize:12,marginBottom:6}}>State</div>
+            <select value={form.state} onChange={e=>{upd("state",e.target.value);upd("city","");}} style={{...inp}}>
+              <option value="">Select your state...</option>
+              {STATES.map(s=><option key={s.name}>{s.name}</option>)}
+            </select>
+            {stateObj && (
+              <>
+                <div style={{color:MUT,fontSize:12,marginBottom:6}}>City / Town</div>
+                <select value={form.city} onChange={e=>upd("city",e.target.value)} style={{...inp}}>
+                  <option value="">Select your city...</option>
+                  {stateObj.cities.map(c=><option key={c}>{c}</option>)}
+                </select>
+              </>
+            )}
+            <div style={{color:MUT,fontSize:12,marginBottom:6}}>Street Address</div>
+            <input placeholder="e.g. 12 Allen Avenue, Ikeja" value={form.address} onChange={e=>upd("address",e.target.value)} style={inp}/>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>setStep(1)} style={{flex:1,background:CRD,color:MUT,border:`1px solid ${BDR}`,borderRadius:9,padding:"13px",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>← Back</button>
+              <button onClick={()=>form.state&&form.city&&form.address&&setStep(3)} style={{flex:2,background:form.state&&form.city&&form.address?A:FNT,color:form.state&&form.city&&form.address?BG:MUT,border:"none",borderRadius:9,padding:"13px",fontWeight:800,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>Next →</button>
+            </div>
+          </div>
+        )}
+
+        {step===3 && (
+          <div>
+            <div style={{color:TXT,fontWeight:700,fontSize:16,marginBottom:16}}>Step 3 — About You</div>
+            <div style={{color:MUT,fontSize:12,marginBottom:6}}>Phone Number</div>
+            <div style={{position:"relative",marginBottom:12}}>
+              <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:MUT,fontSize:13,fontWeight:600,pointerEvents:"none"}}>+234</span>
+              <input placeholder="Phone number" value={form.phone} onChange={e=>upd("phone",e.target.value)} style={{...inp,paddingLeft:56,marginBottom:0}}/>
+            </div>
+            <div style={{color:MUT,fontSize:12,marginBottom:6}}>Price Range</div>
+            <input placeholder="e.g. ₦5,000 – ₦20,000" value={form.price} onChange={e=>upd("price",e.target.value)} style={inp}/>
+            <div style={{color:MUT,fontSize:12,marginBottom:6}}>Years of Experience</div>
+            <select value={form.experience} onChange={e=>upd("experience",e.target.value)} style={inp}>
+              <option value="">Select experience...</option>
+              {["Less than 1 year","1–2 years","3–5 years","6–10 years","10+ years"].map(o=><option key={o}>{o}</option>)}
+            </select>
+            <div style={{color:MUT,fontSize:12,marginBottom:6}}>Bio — Tell clients about yourself</div>
+            <textarea placeholder="Describe your skills, experience and what makes you stand out..." value={form.bio} onChange={e=>upd("bio",e.target.value)} rows={4} style={{...inp,resize:"vertical"}}/>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>setStep(2)} style={{flex:1,background:CRD,color:MUT,border:`1px solid ${BDR}`,borderRadius:9,padding:"13px",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>← Back</button>
+              <button onClick={()=>setSubmitted(true)} style={{flex:2,background:A,color:BG,border:"none",borderRadius:9,padding:"13px",fontWeight:800,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>🚀 Submit Profile</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AuthModal({mode,onClose,onDone,onProviderSignup}) {
   const [tab,setTab] = useState(mode);
   const [step,setStep] = useState(1);
   const [name,setName] = useState("");
@@ -100,13 +206,18 @@ function AuthModal({mode,onClose,onDone}) {
 
   const inp = {width:"100%",background:SUR,border:`1px solid ${BDR}`,color:TXT,borderRadius:9,padding:"11px 13px",fontSize:14,outline:"none",fontFamily:"inherit",marginBottom:10,boxSizing:"border-box"};
 
+  const handleDone = () => {
+    if (type === "provider") { onProviderSignup(); }
+    else { onDone(); }
+  };
+
   if (done) return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",zIndex:99,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
       <div style={{background:SUR,border:`1px solid ${BDR}`,borderRadius:18,padding:32,textAlign:"center",maxWidth:320,width:"100%"}}>
         <div style={{fontSize:48,marginBottom:12}}>🎉</div>
         <div style={{color:A,fontWeight:800,fontSize:18,marginBottom:6}}>Welcome to Nexstaff!</div>
-        <div style={{color:MUT,fontSize:13,marginBottom:20}}>Your account is ready.</div>
-        <button onClick={onDone} style={{background:A,color:BG,border:"none",borderRadius:9,padding:"12px 32px",fontWeight:800,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Get Started</button>
+        <div style={{color:MUT,fontSize:13,marginBottom:20}}>{type==="provider"?"Let's set up your professional profile.":"Your account is ready."}</div>
+        <button onClick={handleDone} style={{background:A,color:BG,border:"none",borderRadius:9,padding:"12px 32px",fontWeight:800,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{type==="provider"?"Set Up Profile →":"Get Started"}</button>
       </div>
     </div>
   );
@@ -127,7 +238,7 @@ function AuthModal({mode,onClose,onDone}) {
           ))}
         </div>
 
-        <button onClick={onDone} style={{width:"100%",background:CRD,border:`1px solid ${BDR}`,color:TXT,borderRadius:9,padding:"11px",display:"flex",alignItems:"center",justifyContent:"center",gap:10,cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:600,marginBottom:12,boxSizing:"border-box"}}>
+        <button onClick={handleDone} style={{width:"100%",background:CRD,border:`1px solid ${BDR}`,color:TXT,borderRadius:9,padding:"11px",display:"flex",alignItems:"center",justifyContent:"center",gap:10,cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:600,marginBottom:12,boxSizing:"border-box"}}>
           <svg width="17" height="17" viewBox="0 0 48 48">
             <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
             <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
@@ -169,7 +280,7 @@ function AuthModal({mode,onClose,onDone}) {
                   <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:MUT,fontSize:13,fontWeight:600,pointerEvents:"none"}}>+234</span>
                   <input placeholder="Phone number" value={phone} onChange={e=>setPhone(e.target.value)} style={{...inp,paddingLeft:56,marginBottom:0}}/>
                 </div>
-                <button onClick={()=>setStep(2)} style={{width:"100%",background:A,color:BG,border:"none",borderRadius:9,padding:"13px",fontWeight:800,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>Next →</button>
+                <button onClick={()=>setStep(2)} style={{width:"100%",background:A,color:BG,border:"none",borderRadius:9,padding:"13px",fontWeight:800,fontSize:15,cursor:"pointer",fontFamily:"inherit",marginTop:6}}>Next →</button>
               </>
             )}
             {step===2 && (
@@ -196,6 +307,7 @@ export default function App() {
   const [search,setSearch] = useState("");
   const [selState,setSelState] = useState("");
   const [selCity,setSelCity] = useState("");
+  const [showOnboarding,setShowOnboarding] = useState(false);
 
   const stateObj = STATES.find(s=>s.name===selState);
   const ss = {background:SUR,border:`1px solid ${BDR}`,color:TXT,borderRadius:9,padding:"10px 12px",fontSize:13,outline:"none",fontFamily:"inherit"};
@@ -206,6 +318,8 @@ export default function App() {
       &&(!selState||p.state===selState)
       &&(!selCity||p.city===selCity);
   });
+
+  if (showOnboarding) return <ProviderOnboarding user={user} onDone={()=>{setShowOnboarding(false);setPage("home");}}/>;
 
   return (
     <div style={{minHeight:"100vh",background:BG,color:TXT,fontFamily:"system-ui,sans-serif"}}>
@@ -340,7 +454,7 @@ export default function App() {
         <div style={{color:FNT,fontSize:11}}>Professional Services Platform · © 2025 Nexstaff Technologies Ltd</div>
       </div>
 
-      {auth && <AuthModal mode={auth} onClose={()=>setAuth(null)} onDone={()=>{setUser({});setAuth(null);}}/>}
+      {auth && <AuthModal mode={auth} onClose={()=>setAuth(null)} onDone={()=>{setUser({});setAuth(null);}} onProviderSignup={()=>{setUser({});setAuth(null);setShowOnboarding(true);}}/>}
     </div>
   );
 }
