@@ -62,7 +62,6 @@ const PROS = [
 const A="#F5A623",BG="#0D0E14",SUR="#13141C",CRD="#1A1B26",BDR="#2A2C3E",TXT="#ECEEF7",MUT="#7B7F9E",FNT="#4A4D66",GRN="#34D399";
 
 function ProCard({p}) {
-  const [showFull, setShowFull] = useState(false);
   return (
     <div style={{background:CRD,border:`1px solid ${BDR}`,borderRadius:14,padding:16,marginBottom:12}}>
       <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
